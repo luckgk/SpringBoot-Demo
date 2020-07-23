@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.youhua.production.dao.SystemUserDao">
+
+	<select id="get" resultType="com.youhua.production.bean.SystemUser">
+		select `id`,`lastName`,`loginName`,`phoneNumber`,`email` from systemuser where id = #{value}
+	</select>
+
+	<select id="list" resultType="com.youhua.production.bean.SystemUser">
+		select `id`,`lastName`,`loginName`,`phoneNumber`,`email` from systemuser
+        <where>  
+		  		  <if test="id != null and id != ''"> and id = #{id} </if>
+		  		  <if test="loginName != null and loginName != ''"> and loginName = #{loginName} </if>
+		  		  <if test="lastName != null and lastName != ''"> and lastName  like concat(concat('%',#{lastName}),'%') </if>
+		  		  <if test="phoneNumber != null and phoneNumber != ''"> and phoneNumber = #{phoneNumber} </if>
+		  		  <if test="email != null and email != ''"> and email = #{email} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+
+
+	<select id="findAll" resultType="com.youhua.production.bean.SystemUser">
+		select `id`,`lastName`,`loginName`,`phoneNumber`,`email` from systemuser
+	</select>
+	
+	<select id="listOperation" resultType="com.youhua.production.bean.SystemUser">
+		select `id`,`lastName`,`loginName`,`phoneNumber`,`email` from systemuser
+        <where>
+				<if test="id != null and id != ''"> and id = #{id} </if>
+				<if test="loginName != null and loginName != ''"> and loginName = #{loginName} </if>
+				<if test="lastName != null and lastName != ''"> and lastName  like concat(concat('%',#{lastName}),'%') </if>
+				<if test="phoneNumber != null and phoneNumber != ''"> and phoneNumber = #{phoneNumber} </if>
+				<if test="email != null and email != ''"> and email = #{email} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from systemuser
+		 <where>
+				<if test="id != null and id != ''"> and id = #{id} </if>
+				<if test="loginName != null and loginName != ''"> and loginName = #{loginName} </if>
+				<if test="lastName != null and lastName != ''"> and lastName  like concat(concat('%',#{lastName}),'%') </if>
+				<if test="phoneNumber != null and phoneNumber != ''"> and phoneNumber = #{phoneNumber} </if>
+				<if test="email != null and email != ''"> and email = #{email} </if>
+		  		</where>
+	</select>
+	<insert id="save" parameterType="com.youhua.production.bean.SystemUser" useGeneratedKeys="true" keyProperty="id">
+		insert into systemuser
+		(
+			`lastName`,
+			`loginName`,
+			`phoneNumber`,
+			`email`
+		)
+		values
+		(
+			#{lastName},
+			#{loginName},
+			#{phoneNumber},
+			#{email}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.youhua.production.bean.SystemUser">
+		update systemuser
+		<set>
+			<if test="lastName != null">`lastName` = #{lastName}, </if>
+			<if test="loginName != null">`loginName` = #{loginName}, </if>
+			<if test="phoneNumber != null">`phoneNumber` = #{phoneNumber}, </if>
+			<if test="email != null">`email` = #{email}, </if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="remove">
+		delete from systemuser where id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from systemuser where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
